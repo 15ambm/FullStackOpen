@@ -61,6 +61,21 @@ const Button = ({handleClick, text}) => (
     </button>
  )
 
+ const History = (props) => {
+
+    if(props.allClicks.length == 0 ){
+      return (
+        <div>Press one of the buttons and see what happens ;)</div>
+      )
+    }
+
+    return (
+      <div>{props.allClicks.join(' ')}</div>
+    )
+
+
+ }
+
 const App = () => {
   const course = {
       name: 'Half Stack application development',
@@ -80,23 +95,33 @@ const App = () => {
       ]
     }
 
-    const [ counter, setCounter ] = useState(0)
+    const [ left, setLeft ] = useState(0)
+    const [ right, setRight ] = useState(0)
+    const [ allClicks, setAllClicks] = useState([])
     
-    const incrementCounter = () => setCounter(counter + 1)
-    const zeroCounter = () => setCounter(0)
-    const decrementCounter = () => setCounter(counter - 1)
+    const handleLeftClick = () => {
+      setAllClicks(allClicks.concat('L'))
+      setLeft(left + 1)
+    } 
+  
+    const handleRightClick = () => {
+      setAllClicks(allClicks.concat('R'))
+      setRight(right + 1)
+    } 
+  
+    //debugger
 
   return (
     <div>
       {/* <Header course={course}/>
       <Content  course={course} />
       <Total course={course} /> */}
+    {left}
+    <Button handleClick={handleLeftClick} text="Left"/>
+    <Button handleClick={handleRightClick} text="Right"/>
+    {right}
+    <History allClicks={allClicks}/>
 
-    <Display counter={counter}/>
-
-    <Button handleClick={incrementCounter} text="Add One"/>
-    <Button handleClick={zeroCounter} text="Zero"/>
-    <Button handleClick={decrementCounter} text="Subtract One"/>
 
     </div>
   )
