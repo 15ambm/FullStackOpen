@@ -37,9 +37,9 @@ const Part = (props) => {
 }
 
 const Total = ({ course }) => {
-  const sum = course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises
+  const sum = course.parts.reduce((sum, part) => part.exercises + sum, 0)
   return(
-    <p>Number of exercises {sum}</p>
+    <p><b> Number of exercises  {sum} </b></p>
   ) 
 }
 
@@ -63,6 +63,10 @@ const App = () => {
       {
         name: 'A new part',
         exercises: 2
+      },
+      {
+        name:'Redux',
+        exercises: 9
       }
     ]
   }
