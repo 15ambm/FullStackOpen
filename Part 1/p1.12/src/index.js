@@ -25,7 +25,9 @@ const App = (props) => {
       copy[selected]+=1
       setVotes(copy)
   }
-
+  
+  
+  
   return (
     <div>
 
