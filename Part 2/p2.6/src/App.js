@@ -17,12 +17,16 @@ const App = () => {
   // Don't forget to prevent default 
   const addNewName = (event) => {
     event.preventDefault()
-    const tempNewName = {
-      name: newName,
-      id: persons.length + 1
+    if(persons.find(person => person.name === newName)) {
+      window.alert(`${newName} is already in the phonebook`)
+    } else {
+      const tempNewName = {
+        name: newName,
+        id: persons.length + 1
+      }
+      setPersons(persons.concat(tempNewName))
+      setNewName('')
     }
-    setPersons(persons.concat(tempNewName))
-    setNewName('')
   }
 
   return (
