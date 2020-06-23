@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from "./App";
+import axios from "axios";
 
 const notes = [
   {
@@ -23,7 +24,13 @@ const notes = [
   }
 ]
 
+// axios
+//   .get('http://localhost:3001/notes')
+//   .then(response => {
+//   console.log(response)
+//   })
+
 ReactDOM.render(
-  <App notes={notes} />,
+  <App />,
   document.getElementById('root')
 ) 
