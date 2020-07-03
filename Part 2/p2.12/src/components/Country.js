@@ -1,9 +1,11 @@
 import React from 'react';
 
-const Country = ({data}) => {
+const Country = ({data, handleShowButton, single}) => {
     return (
       <div>
-        <h3>{data.name}</h3>
+        <h3>{data.name} 
+            {single ? <div></div>: <button onClick={ () => handleShowButton(false, data.numericCode) }>Collapse</button>}  
+        </h3>
         <div>Capital: {data.capital}</div>
         <div>Population: {data.population}</div>
         <h4>Languages</h4>
@@ -12,6 +14,7 @@ const Country = ({data}) => {
         </div>
         <h4>Flag</h4>
         <img src={data.flag} height={90}></img>
+        <div>-----------------------------------</div>
       </div>
     )
   }

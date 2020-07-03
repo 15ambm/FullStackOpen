@@ -4,8 +4,9 @@ import Countries from "./components/Countries";
 
 const App =  () => {
 
-  const [textInput, setInput] = useState('')
+  const [textInput, setInput] = useState("")
   const [countryData, setCountryData] = useState([])
+  const [expandedCountries, setExpandedCountries] = useState([])
 
   useEffect(() => {
     axios
@@ -19,21 +20,38 @@ const App =  () => {
 
   const onInputChange = (event) => {
     setInput(event.target.value)
+    setExpandedCountries([])
   }
 
-  const filteredData = countryData.filter(item => {
-
+  const filteredData = countryData.reduce((prev, item) => {
     let lowerCaseInput = textInput.toLocaleLowerCase()
     let lowerCaseData = item.name.toLocaleLowerCase()
-
     if(lowerCaseData.indexOf(lowerCaseInput) >= 0) {
+      if (expandedCountries.includes(item.numericCode)){
+        prev.push({data:item, expanded:true})
+        return prev
+      } else {
+        prev.push({data:item, expanded:false})
+        return prev
+      }
 
-      return true
     }
-    else return false
-  })
+    return prev
+  }, [])
 
-  //console.log("filtered: ", filteredData)
+  const handleShowButton = (toggle, code) => {
+      if(toggle) {
+        let replace = expandedCountries.concat(code)
+        setExpandedCountries(replace)
+      } else {
+        let replace = expandedCountries.filter(item => {
+          if (item === code) {
+            return false
+          } else return true
+        })
+        setExpandedCountries(replace)
+      }
+  }
   
   return (
     <div>
@@ -41,7 +59,7 @@ const App =  () => {
       <form>
         <input value={textInput} onChange={onInputChange}/>
       </form>
-        <Countries data={filteredData}/>
+        <Countries data={filteredData} handleShowButton={handleShowButton}/>
     </div>
   );
 }
