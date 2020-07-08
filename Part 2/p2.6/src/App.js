@@ -5,12 +5,14 @@ import Filter from './components/Filter';
 import service from './services/persons'
 
 const App = () => {
+
   const [ persons, setPersons ] = useState([]) 
   
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ showAll, toggleShowAll] = useState(true)
   const [ filter, setFilter] = useState('')
+  const [ rollingID, setRollingID] = useState(0)
 
   useEffect(() => {
     service
@@ -18,6 +20,8 @@ const App = () => {
       .then(initialData => {
         console.log(initialData)
         setPersons(initialData)
+        const ids = initialData.map(item => item.id)
+        setRollingID(Math.max(...ids) + 1)
       })
   }, [])
 
@@ -52,7 +56,7 @@ const App = () => {
       const tempNewName = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1
+        id: rollingID
       }
       service
         .create(tempNewName)
@@ -60,8 +64,22 @@ const App = () => {
           setPersons(persons.concat(response))
           setNewName('')
           setNewNumber('')
+          setRollingID(rollingID + 1)
         })
     }
+  }
+
+  const deletePersonHandler = (id) => {
+    const person = persons.find(p => p.id === id)
+    const result = window.confirm(`Are you sure you would like to delete ${person.name}`)
+    if(result) {
+      service
+      .deleteItem(id)
+      .then(response => {
+        setPersons(persons.filter(p => p.id !== id))
+      })
+    }
+
   }
 
   const personsToShow = showAll ? persons : persons.filter(persons => {
@@ -83,7 +101,7 @@ const App = () => {
           buttonHandler={addNewPerson}
           />
       <h3>Numbers</h3>
-        <Persons persons={personsToShow}/>
+        <Persons persons={personsToShow} deleteHandler={deletePersonHandler}/>
     </div>
   )
 }
