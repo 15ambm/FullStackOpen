@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PersonForm from "./components/PersonForm";
 import Persons from './components/Persons';
 import Filter from './components/Filter';
-import axios from "axios";
+import service from './services/persons'
 
 const App = () => {
   const [ persons, setPersons ] = useState([]) 
@@ -13,15 +13,14 @@ const App = () => {
   const [ filter, setFilter] = useState('')
 
   useEffect(() => {
-    console.log("effect")
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        console.log(response)
-        setPersons(response.data)
+    service
+      .getAll()
+      .then(initialData => {
+        console.log(initialData)
+        setPersons(initialData)
       })
   }, [])
-  console.log('persons',persons.length);
+
 
   // KEY TAKEAWAY: Passing the event parameter to our handler
   const handleNewNameChange = (event) => {
@@ -55,13 +54,10 @@ const App = () => {
         number: newNumber,
         id: persons.length + 1
       }
-
-      const url = `http://localhost:3001/persons`
-      axios
-        .post(url, tempNewName )
+      service
+        .create(tempNewName)
         .then(response => {
-          console.log(response)
-          setPersons(persons.concat(response.data))
+          setPersons(persons.concat(response))
           setNewName('')
           setNewNumber('')
         })
