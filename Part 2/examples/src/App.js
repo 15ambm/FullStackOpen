@@ -3,11 +3,35 @@ import Note from "./components/Note";
 import axios from 'axios';
 import noteService from "./services/notes";
 
+const Notification = ({message}) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className="error">
+      {message}
+    </div>
+  )
+}
+
+const Footer = () => {
+  const footerStyle = {
+    color: 'green',
+    fontStyle: 'italic',
+    fontSize: 16
+  }
+  return <div style={footerStyle}>
+    <br/>
+    <em>Note App, Made by Alex Mason 2020</em>
+  </div>
+}
+
 const App = (props) => {
 
     const [notes, setNotes] = useState([])
     const [newNote, setNewNote] = useState('')
     const [showAll, setShowAll] = useState(true)
+    const [errorMessage, setErrorMessage] = useState(null)
   
     useEffect(() => {
       noteService
@@ -16,10 +40,9 @@ const App = (props) => {
           setNotes(initialResponse)
         })
         .catch(error => {
-          alert(`there has been a problem`)
+          alert(`there has been a problem getting notes from the server`)
         })
     }, [])
-
 
     const addNote = (event) => {
       event.preventDefault()
@@ -46,7 +69,6 @@ const App = (props) => {
     const toggleNoteImportance = (id) => {
       console.log("toggle id ", id)
       
-      const url = `http://localhost:3001/notes/${id}`
       const note = notes.find(n => n.id === id)
       const changedNote = {...note, important: !note.important}
 
@@ -57,7 +79,10 @@ const App = (props) => {
           setNotes(notes.map(note => note.id !== id ? note : response))
         })
         .catch(error => {
-          alert(`there has been a problem`)
+          setErrorMessage(`The note '${note.content}' was already removed`)
+          setTimeout(() =>{
+            setErrorMessage(null)
+          }, 5000)
           setNotes(notes.filter(n => id !== n.id))
         })
 
@@ -69,6 +94,7 @@ const App = (props) => {
     return (
       <div>
         <h1>Notes</h1>
+        <Notification message={errorMessage}/>
         <div>
           <button onClick={() => setShowAll(!showAll)}>
             show {showAll ? "important" : "all"}
@@ -83,6 +109,7 @@ const App = (props) => {
           <input value={newNote} onChange={handleNoteChange}/>
           <button type="submit">Save</button>
         </form>
+        <Footer/>
       </div>
     )
   }
