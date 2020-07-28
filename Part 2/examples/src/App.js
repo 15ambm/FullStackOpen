@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Note from "./components/Note";
-import axios from 'axios';
 import noteService from "./services/notes";
 
 const Notification = ({message}) => {

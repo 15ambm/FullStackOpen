@@ -1,7 +1,9 @@
 const express = require('express')
 const { response } = require('express')
 const app = express()
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
 
 let notes = [
@@ -79,6 +81,14 @@ app.delete('/api/notes/:id', (req, res) => {
     const id = Number(req.params.id)
     notes = notes.filter(note => note.id === id)
     res.status(204).end()
+})
+
+app.put('/api/notes/:id', (req, res) => {
+    const id = Number(req.params.id)
+    const object = req.body
+    const updatedNotes = notes.map(item => item.id === id ? object : item)
+    notes = updatedNotes
+    res.json(object)
 })
 
 const PORT = 3001
