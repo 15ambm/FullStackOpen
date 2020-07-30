@@ -22,7 +22,6 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ showAll, toggleShowAll] = useState(true)
   const [ filter, setFilter] = useState('')
-  const [ rollingID, setRollingID] = useState(0)
   const [ notification, setNotification] = useState(null)
 
   useEffect(() => {
@@ -32,7 +31,6 @@ const App = () => {
         console.log(initialData)
         setPersons(initialData)
         const ids = initialData.map(item => item.id)
-        setRollingID(Math.max(...ids) + 1)
       })
   }, [])
 
@@ -84,22 +82,23 @@ const App = () => {
       }
     } else {
       const tempNewName = {
-        name: newName,
+        name: newName,  
         number: newNumber,
-        id: rollingID
+        // id: rollingID
       }
       service
         .create(tempNewName)
         .then(response => {
+          console.log(response)
           setNotification(`'${newName}' has been added to the Phonebook`)
           setPersons(persons.concat(response))
           setNewName('')
           setNewNumber('')
-          setRollingID(rollingID + 1)
+          // setRollingID(rollingID + 1)
           setTimeout(() => {
             setNotification(null)
           }, 5000)
-        })
+        }).catch(err => {})
     }
   }
 
