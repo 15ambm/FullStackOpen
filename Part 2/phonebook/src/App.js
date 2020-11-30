@@ -98,7 +98,13 @@ const App = () => {
           setTimeout(() => {
             setNotification(null)
           }, 5000)
-        }).catch(err => {})
+        }).catch(err => {
+          //console.log(err.response)
+          setNotification(`Unable to add a new person: ${err.response.data.error}`)
+          setTimeout(() => {
+            setNotification(null)
+        }, 5000)
+        })
     }
   }
 
