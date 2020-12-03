@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm'
 import NoteForm from './components/NoteForm'
 import noteService from "./services/notes";
 import loginService from './services/login'
+import Togglable from './components/Togglable';
 
 const Notification = ({message}) => {
   if (message === null) {
@@ -37,6 +38,7 @@ const App = (props) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
+    const [loginVisible, setLoginVisible] = useState(false)
   
     useEffect(() => {
       noteService
@@ -128,16 +130,44 @@ const App = (props) => {
 
     }
 
+    const loginForm = () => {
+      const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+      const showWhenVisible = { display: loginVisible ? '' : 'none' }
+  
+      return (
+        <div>
+          <div style={hideWhenVisible}>
+            <button onClick={() => setLoginVisible(true)}>log in</button>
+          </div>
+          <div style={showWhenVisible}>
+            <LoginForm
+              username={username}
+              password={password}
+              setUsername={setUsername}
+              setPassword={setPassword}
+              handleLogin={handleLogin}
+            />
+            <button onClick={() => setLoginVisible(false)}>cancel</button>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div>
         <h1>Notes</h1>
         <Notification message={errorMessage}/>
 
         {user === null ?
-          <LoginForm handleLogin={handleLogin} username={username} setUsername={setUsername} password={password} setPassword={setPassword}/> :
+          loginForm():
           <div>
             <p>{user.name} logged-in</p>
-            <NoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange}/>
+            <Togglable buttonLabel="New Note">
+            <NoteForm 
+              addNote={addNote} 
+              newNote={newNote} 
+              handleNoteChange={handleNoteChange}/>
+            </Togglable>
           </div>
           
         }
