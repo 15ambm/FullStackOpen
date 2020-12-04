@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Note from "./components/Note";
 import LoginForm from './components/LoginForm'
 import NoteForm from './components/NoteForm'
@@ -32,13 +32,14 @@ const Footer = () => {
 const App = (props) => {
 
     const [notes, setNotes] = useState([])
-    const [newNote, setNewNote] = useState('')
     const [showAll, setShowAll] = useState(true)
     const [errorMessage, setErrorMessage] = useState(null)
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
     const [loginVisible, setLoginVisible] = useState(false)
+
+    const noteFormRef = useRef()
   
     useEffect(() => {
       noteService
@@ -59,28 +60,6 @@ const App = (props) => {
         noteService.setToken(user.token)
       }
     }, [])
-
-    const addNote = (event) => {
-      event.preventDefault()
-      const noteObject = {
-        content: newNote,
-        date: new Date().toISOString(),
-        important: Math.random() < 0.5,
-        id: notes.length + 1
-      }
-
-      noteService
-        .create(noteObject)
-        .then(response =>{
-           setNotes(notes.concat(response))
-           setNewNote('')
-          })
-    }
-
-    const handleNoteChange = (event) => {
-      console.log(event.target.value)
-      setNewNote(event.target.value)
-    }
     
     const toggleNoteImportance = (id) => {
       console.log("toggle id ", id)
@@ -130,6 +109,13 @@ const App = (props) => {
 
     }
 
+    const addNote = (noteObject) => {
+      noteFormRef.current.toggleVisibility()
+      noteService
+        .create(noteObject)
+        .then(response => setNotes(notes.concat(response)))
+    }
+
     const loginForm = () => {
       const hideWhenVisible = { display: loginVisible ? 'none' : '' }
       const showWhenVisible = { display: loginVisible ? '' : 'none' }
@@ -162,11 +148,8 @@ const App = (props) => {
           loginForm():
           <div>
             <p>{user.name} logged-in</p>
-            <Togglable buttonLabel="New Note">
-            <NoteForm 
-              addNote={addNote} 
-              newNote={newNote} 
-              handleNoteChange={handleNoteChange}/>
+            <Togglable buttonLabel="New Note" ref={noteFormRef}>
+              <NoteForm createNote={addNote} />
             </Togglable>
           </div>
           
